@@ -22,8 +22,8 @@ class GamePlayer extends Component {
 
     this.setState({
       gameInProgress: true,
-      userChoice: userChoice,
-      opponentChoice: opponentChoice,
+      userChoice,
+      opponentChoice,
     })
 
     const opponentId = opponentChoice.id
@@ -50,26 +50,14 @@ class GamePlayer extends Component {
   }
 
   renderResult = (opponentId, userId) => {
-    if (userId === 'PAPER' && opponentId === 'ROCK') {
-      return 'YOU WON'
+    const outcomes = {
+      ROCK: 'SCISSORS',
+      PAPER: 'ROCK',
+      SCISSORS: 'PAPER',
     }
-    if (userId === 'SCISSORS' && opponentId === 'ROCK') {
-      return 'YOU LOSE'
-    }
-    if (userId === 'ROCK' && opponentId === 'PAPER') {
-      return 'YOU LOSE'
-    }
-    if (userId === 'SCISSORS' && opponentId === 'PAPER') {
-      return 'YOU WON'
-    }
-    if (userId === 'ROCK' && opponentId === 'SCISSORS') {
-      return 'YOU WON'
-    }
-    if (userId === 'PAPER' && opponentId === 'SCISSORS') {
-      return 'YOU LOSE'
-    } else {
-      return 'IT IS DRAW'
-    }
+
+    if (userId === opponentId) return 'IT IS DRAW'
+    return outcomes[userId] === opponentId ? 'YOU WON' : 'YOU LOSE'
   }
 
   onPlayAgain = () => {
@@ -129,45 +117,52 @@ class GamePlayer extends Component {
 
     return (
       <div className="game-background">
-        <div className="card-1">
-          <h1 className="game-title">
-            ROCK
-            <br />
-            PAPER
-            <br />
-            SCISSORS
-          </h1>
-          <div className="score-container">
-            <p className="score">SCORE</p>
-            <p className="score-value">{scoreValue}</p>
+        <div className="score-popup-container">
+          <div className="card-1">
+            <h1 className="game-title">
+              ROCK
+              <br />
+              PAPER
+              <br />
+              SCISSORS
+            </h1>
+            <div className="score-container">
+              <p className="score">SCORE</p>
+              <p className="score-value">{scoreValue}</p>
+            </div>
           </div>
+          <Popup
+            modal
+            closeOnDocumentClick
+            contentStyle={{
+              background: '#ffffff',
+              borderRadius: '10px',
+              padding: '20px',
+              width: '90%',
+              maxWidth: '400px',
+              margin: 'auto',
+            }}
+            trigger={
+              <button type="button" className="rules-btn">
+                RULES
+              </button>
+            }
+          >
+            {close => (
+              <div className="rule-container">
+                <button className="close-btn" type="button" onClick={close}>
+                  <IoMdClose className="close-icon" />
+                </button>
+                <img
+                  src="https://assets.ccbp.in/frontend/react-js/rock-paper-scissor/rules-image.png"
+                  className="rule-img"
+                  alt="rules"
+                />
+              </div>
+            )}
+          </Popup>
         </div>
         {gameInProgress ? this.renderResultView() : this.renderChoiceView()}
-
-        <Popup
-          trigger={
-            <button type="button" className="rules-btn">
-              RULES
-            </button>
-          }
-          position="center-center"
-        >
-          {close => (
-            <div className="rule-container">
-              <button
-                className="close-btn"
-                type="button"
-                onClick={() => close()}
-              >
-                <IoMdClose className="close-icon" />
-              </button>
-              <img
-                src="https://assets.ccbp.in/frontend/react-js/rock-paper-scissor/rules-image.png"
-                className="rule-img"
-              />
-            </div>
-          )}
-        </Popup>
       </div>
     )
   }
